@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cool-retro-term (wasm)</title>
+<style>
+  body { margin:0; background:#050505; }
+  #crt { width:100vw; height:100vh; }
+  #log { position:fixed; left:8px; bottom:8px; width:80%; height:14px;
+         color:#5f5; font:12px monospace; opacity:.7; }
+</style>
+</head>
+<body>
+  <div id="crt"></div>
+  <div id="log"></div>
+
+  <!-- Emscripten output of cool-retro-term built with Qt for WebAssembly -->
+  <script src="cool-retro-term.js"></script>
+
+  <script>
+  // ---- Pipe API ----------------------------------------------------------
+  // Host contract: the page feeds text into the terminal and receives
+  // the terminal's raw byte stream (VT sequences included, unmodified).
+  //
+  //   window.crt.write(string)            -> pipe in
+  //   window.crt.onRead(cb(Uint8Array))   -> pipe out
+  //   window.crt.writable(bytes)          -> mirror pipe-in from raw bytes
+  const readSubscribers = [];
+  let module = null;
+
+  window.crtTermReadOut = function (bytes) {
+    for (const cb of readSubscribers) cb(bytes);
+  };
+
+  window.crt = {
+    write (text) {
+      if (!module) return;
+      const b = new TextEncoder().encode(text);
+      const p = module._malloc(b.length || 1);
+      module.HEAPU8.set(b, p);
+      module._crt_wasm_in(p, b.length);
+      module._free(p);
+    },
+    onRead (cb) { readSubscribers.push(cb); }
+  };
+
+  // Minimal demo sink: show raw bytes in the corner strip until the
+  // host wires a real consumer.
+  window.crt.onRead(b => {
+    const s = new TextDecoder('utf-8', { fatal: false }).decode(b);
+    log.textContent = (log.textContent + s).slice(-400);
+  });
+
+  function boot () {
+    module = window.cool_retro_term || window.Module;
+    if (!module || !module.FS) { setTimeout(boot, 100); return; }
+    module.addRunDependency('crt-host-ready');
+    setTimeout(() => module.removeRunDependency('crt-host-ready'), 0);
+    log.textContent = '[crt] pipe ready — window.crt.write()/onRead()';
+  }
+  boot();
+  </script>
+</body>
+</html>
