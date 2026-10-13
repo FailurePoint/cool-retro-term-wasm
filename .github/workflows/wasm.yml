@@ -44,6 +44,10 @@ jobs:
       - name: Stage site
         run: |
           mkdir -p site
+          # Shrink initial memory: the app's static data needs ~53MB, but
+          # INITIAL_MEMORY is also the floor for wasm heap growth. Pre-allocating
+          # 134MB makes the page OOM on memory-constrained browsers.
+          sed -i 's/INITIAL_MEMORY=Module\["INITIAL_MEMORY"\]||134217728/INITIAL_MEMORY=Module["INITIAL_MEMORY"]||67108864/' build-wasm/deploy/cool-retro-term.js
           cp build-wasm/deploy/cool-retro-term.js build-wasm/deploy/cool-retro-term.wasm site/ 2>/dev/null || true
           cp wasm/index.html wasm/boot-sim.js site/
           cp -r app/qml/fonts site/fonts 2>/dev/null || true

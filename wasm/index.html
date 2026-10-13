@@ -55,7 +55,11 @@
   function boot () {
     if (typeof createQtAppInstance === 'undefined') { setTimeout(boot, 100); return; }
     const canvas = document.getElementById('crt');
-    createQtAppInstance({ canvas: canvas }).then(m => {
+    createQtAppInstance({
+      canvas: canvas,
+      qtContainerElements: [canvas],
+      locateFile: f => f
+    }).then(m => {
       module = m;
       log.textContent = '[crt] app up — boot simulation starting';
       setTimeout(window.startBootSim, 1500);
