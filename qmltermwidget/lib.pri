@@ -63,6 +63,12 @@ SOURCES += $$PWD/lib/BlockArray.cpp \
 wasm {
     HEADERS += $$PWD/lib/PtyWasm.h
     SOURCES += $$PWD/lib/PtyWasm.cpp
+    HEADERS -= $$PWD/lib/kprocess.h
+    HEADERS -= $$PWD/lib/kptydevice.h
+    HEADERS -= $$PWD/lib/kpty.h
+    HEADERS -= $$PWD/lib/kpty_p.h
+    HEADERS -= $$PWD/lib/kptyprocess.h
+    HEADERS -= $$PWD/lib/Pty.h
     SOURCES -= $$PWD/lib/kprocess.cpp
     SOURCES -= $$PWD/lib/kpty.cpp
     SOURCES -= $$PWD/lib/kptydevice.cpp
