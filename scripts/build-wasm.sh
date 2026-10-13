@@ -6,7 +6,10 @@ WASM_QMAKE="${QMAKE_WASM:-$QT_ROOT_DIR/bin/qmake}"
 cd "$ROOT"
 # Qt's wasm mkspec hardcodes INITIAL_MEMORY=50MB, less than this app's ~53 MB
 # of static data. Patch the mkspec itself so every generated Makefile inherits it.
-grep -q 'INITIAL_MEMORY=134217728' "$QT_ROOT_DIR/mkspecs/wasm-emscripten/qmake.conf" ||   sed -i 's/INITIAL_MEMORY=50MB/INITIAL_MEMORY=134217728/' "$QT_ROOT_DIR/mkspecs/wasm-emscripten/qmake.conf"
+grep -rl 'INITIAL_MEMORY=50MB' "$QT_ROOT_DIR/mkspecs/" 2>/dev/null | while read f; do
+  sed -i 's/INITIAL_MEMORY=50MB/INITIAL_MEMORY=134217728/g' "$f"
+  echo "patched: $f"
+done
 
 mkdir -p build-wasm && cd build-wasm
 
