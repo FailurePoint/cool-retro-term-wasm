@@ -12,7 +12,13 @@
 </head>
 <body>
   <canvas id="crt" tabindex="0"></canvas>
-  <div id="log"></div>
+  <div id="log">[crt] loading page...</div>
+  <script>
+  const log = document.getElementById('log');
+  window.addEventListener('error', e => {
+    log.textContent = '[crt] error: ' + (e.message || e.type).slice(0, 250);
+  });
+  </script>
 
   <!-- Emscripten output of cool-retro-term built with Qt for WebAssembly -->
   <script src="cool-retro-term.js"></script>
@@ -55,15 +61,18 @@
   function boot () {
     if (typeof createQtAppInstance === 'undefined') { setTimeout(boot, 100); return; }
     const canvas = document.getElementById('crt');
+    log.textContent = '[crt] instantiating wasm...';
     createQtAppInstance({
       canvas: canvas,
       qtContainerElements: [canvas],
-      locateFile: f => f
+      locateFile: f => f,
+      print: t => { if (t) log.textContent = ('[crt] ' + t).slice(0, 300); console.log('[crt]', t); },
+      printErr: t => { if (t) console.error('[crt]', t); }
     }).then(m => {
       module = m;
       log.textContent = '[crt] app up — boot simulation starting';
       setTimeout(window.startBootSim, 1500);
-    }, e => { log.textContent = '[crt] init failed: ' + e; });
+    }, e => { log.textContent = '[crt] init failed: ' + e; console.error(e); });
   }
   boot();
   </script>
