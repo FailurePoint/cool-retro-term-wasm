@@ -21,6 +21,8 @@
 #include "QProcessWasm.h"
 #include <QSize>
 
+namespace Konsole {
+
 class Pty : public QObject
 {
     Q_OBJECT
@@ -64,8 +66,10 @@ signals:
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
-    FdStub _fdStub;
+    mutable FdStub _fdStub;
 };
+
+} // namespace Konsole
 
 // C ABI into the wasm module, called from JavaScript.
 // data: pointer into linear memory (HEAPU8), len: byte count.
