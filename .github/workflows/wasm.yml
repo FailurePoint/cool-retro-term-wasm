@@ -33,7 +33,7 @@ jobs:
           target: desktop
           arch: wasm_singlethread
           host: linux
-          modules: qtbase qtshadertools
+          modules: qtshadertools
 
       - name: Build
         run: |
