@@ -30,8 +30,8 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: 6.7.3
-          target: wasm
-          arch: wasm_singlethread
+          target: desktop
+          arch: wasm_64bit
           host: linux
 
       - name: Build
