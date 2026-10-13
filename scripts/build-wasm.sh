@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-WASM_QMAKE="${QMAKE_WASM:-$QT_ROOT_DIR/wasm_singlethread/bin/qmake}"
+WASM_QMAKE="${QMAKE_WASM:-$QT_ROOT_DIR/bin/qmake}"
 
 cd "$ROOT"
 mkdir -p build-wasm && cd build-wasm
