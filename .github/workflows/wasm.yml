@@ -30,8 +30,10 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: 6.7.3
-          target: webassembly
-          aqt-target: webassembly
+          target: wasm
+          arch: wasm_singlethread
+          aqt-target: wasm
+          arch: wasm_singlethread
           host: linux
 
       - name: Build
