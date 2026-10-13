@@ -4,13 +4,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WASM_QMAKE="${QMAKE_WASM:-$QT_ROOT_DIR/bin/qmake}"
 
 cd "$ROOT"
+# Qt's wasm mkspec hardcodes INITIAL_MEMORY=50MB, less than this app's ~53 MB
+# of static data. Patch the mkspec itself so every generated Makefile inherits it.
+grep -q 'INITIAL_MEMORY=134217728' "$QT_ROOT_DIR/mkspecs/wasm-emscripten/qmake.conf" ||   sed -i 's/INITIAL_MEMORY=50MB/INITIAL_MEMORY=134217728/' "$QT_ROOT_DIR/mkspecs/wasm-emscripten/qmake.conf"
+
 mkdir -p build-wasm && cd build-wasm
 
 "$WASM_QMAKE" ../cool-retro-term.pro CONFIG+=wasm CONFIG+=wasm
-# Qt's wasm mkspec appends INITIAL_MEMORY=50MB after any user flag; patch the
-# generated Makefiles so 128 MB wins (the app needs ~53 MB static).
-sed -i 's/INITIAL_MEMORY=50MB/INITIAL_MEMORY=134217728/g' Makefile* ../qmltermwidget/Makefile* ../app/Makefile* 2>/dev/null || true
-
 make -j2
 
 OUT="$ROOT/build-wasm/deploy"
