@@ -16,6 +16,7 @@
 
   <!-- Emscripten output of cool-retro-term built with Qt for WebAssembly -->
   <script src="cool-retro-term.js"></script>
+  <script src="boot-sim.js"></script>
 
   <script>
   // ---- Pipe API ----------------------------------------------------------
@@ -56,7 +57,8 @@
     if (!module || !module.FS) { setTimeout(boot, 100); return; }
     module.addRunDependency('crt-host-ready');
     setTimeout(() => module.removeRunDependency('crt-host-ready'), 0);
-    log.textContent = '[crt] pipe ready — window.crt.write()/onRead()';
+    log.textContent = '[crt] pipe ready — boot simulation starting';
+    setTimeout(window.startBootSim, 1500);
   }
   boot();
   </script>
