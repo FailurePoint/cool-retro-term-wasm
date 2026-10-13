@@ -125,3 +125,8 @@ unix {
 
     INSTALLS += icon32 icon64 icon128 icon256
 }
+
+wasm {
+    # Must come after Qt's own -s INITIAL_MEMORY so ours wins (last -s wins).
+    QMAKE_LFLAGS += "-s INITIAL_MEMORY=134217728"
+}
