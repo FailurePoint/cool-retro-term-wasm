@@ -11,7 +11,7 @@
 </style>
 </head>
 <body>
-  <div id="crt"></div>
+  <canvas id="crt" tabindex="0"></canvas>
   <div id="log"></div>
 
   <!-- Emscripten output of cool-retro-term built with Qt for WebAssembly -->
@@ -53,12 +53,13 @@
   });
 
   function boot () {
-    module = window.cool_retro_term || window.Module;
-    if (!module || !module.FS) { setTimeout(boot, 100); return; }
-    module.addRunDependency('crt-host-ready');
-    setTimeout(() => module.removeRunDependency('crt-host-ready'), 0);
-    log.textContent = '[crt] pipe ready — boot simulation starting';
-    setTimeout(window.startBootSim, 1500);
+    if (typeof createQtAppInstance === 'undefined') { setTimeout(boot, 100); return; }
+    const canvas = document.getElementById('crt');
+    createQtAppInstance({ canvas: canvas }).then(m => {
+      module = m;
+      log.textContent = '[crt] app up — boot simulation starting';
+      setTimeout(window.startBootSim, 1500);
+    }, e => { log.textContent = '[crt] init failed: ' + e; });
   }
   boot();
   </script>
