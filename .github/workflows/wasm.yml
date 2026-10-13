@@ -37,7 +37,7 @@ jobs:
 
       - name: Build
         run: |
-          source $HOME/emsdk/emsdk_env.sh
+          source "$EMSDK/emsdk_env.sh"
           cd "$GITHUB_WORKSPACE"
           ./scripts/build-wasm.sh
 
