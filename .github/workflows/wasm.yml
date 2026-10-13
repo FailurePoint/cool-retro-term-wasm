@@ -33,6 +33,7 @@ jobs:
           target: desktop
           arch: wasm_64bit
           host: linux
+          modules: qtbase qtshadertools
 
       - name: Build
         run: |
