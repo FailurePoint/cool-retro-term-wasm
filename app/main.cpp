@@ -157,12 +157,6 @@ int main(int argc, char *argv[])
         QMetaObject::invokeMethod(rootObject, "createWindow", Qt::QueuedConnection);
     };
 
-    QObject::connect(&singleApp, &KDSingleApplication::messageReceived, &app,
-                     [&requestNewWindow](const QByteArray &message) {
-        if (message.isEmpty() || message == QByteArray("new-window"))
-            requestNewWindow();
-    });
-
 #if defined(Q_OS_MAC)
     QMenu *dockMenu = new QMenu(nullptr);
     dockMenu->addAction(QObject::tr("New Window"), [&requestNewWindow]() { requestNewWindow(); });
