@@ -130,3 +130,9 @@ wasm {
     # Must come after Qt's own -s INITIAL_MEMORY so ours wins (last -s wins).
     QMAKE_LFLAGS += "-s INITIAL_MEMORY=134217728"
 }
+
+wasm {
+    # Qt's mkspec appends -s INITIAL_MEMORY=50MB after user flags; strip it and re-add ours.
+    QMAKE_LFLAGS -= "-s INITIAL_MEMORY=50MB"
+    QMAKE_LFLAGS += "-s INITIAL_MEMORY=134217728"
+}
