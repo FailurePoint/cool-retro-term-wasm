@@ -3,6 +3,8 @@
  */
 #include "PtyWasm.h"
 
+using namespace Konsole;
+
 #include <emscripten.h>
 
 // The single live terminal pipe. Sessions are one-per-window here.
