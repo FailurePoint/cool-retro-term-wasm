@@ -20,6 +20,8 @@
 #include <QObject>
 #include "QProcessWasm.h"
 #include <QSize>
+#include <sys/types.h>
+#include <signal.h> // ::kill, SIGHUP, SIGKILL (declared by emscripten, not used meaningfully)
 
 namespace Konsole {
 
@@ -54,7 +56,7 @@ public:
     void setWindowSize(int lines, int cols);
     QSize windowSize() const;
     void setEmptyPTYProperties();
-    bool waitForFinished(int msecs);
+    bool waitForFinished(int msecs); // returns true: "process" always finishes instantly
     void closePty();
 
 public slots:
