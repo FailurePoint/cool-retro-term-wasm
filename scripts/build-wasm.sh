@@ -16,7 +16,7 @@ cd "$ROOT"
 mkdir -p build-wasm && cd build-wasm
 
 # qmake with the wasm mkspec; use the wasm-target's qmake.
-"${QMAKE_WASM:-qmake-wasm}" ../cool-retro-term.pro CONFIG+=wasm
+"${QMAKE_WASM:-$QT_ROOT_DIR/bin/qmake}" ../cool-retro-term.pro CONFIG+=wasm
 make -j"$(nproc)"
 
 OUT="$ROOT/build-wasm/deploy"
