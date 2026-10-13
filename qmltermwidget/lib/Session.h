@@ -25,7 +25,12 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+#ifdef __EMSCRIPTEN__
+// Qt for WebAssembly has no QProcess; enum-only stub keeps this file identical.
+#include "QProcessWasm.h"
+#else
 #include <QProcess>
+#endif
 #include <QStringList>
 
 #include "Emulation.h"

@@ -18,7 +18,7 @@
 #define PTYWASM_H
 
 #include <QObject>
-#include <QProcess>
+#include "QProcessWasm.h"
 #include <QSize>
 
 class Pty : public QObject
