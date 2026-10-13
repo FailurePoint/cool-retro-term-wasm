@@ -7,7 +7,7 @@ cd "$ROOT"
 mkdir -p build-wasm && cd build-wasm
 
 # qmake with the wasm target's qmake.
-"$WASM_QMAKE" ../cool-retro-term.pro CONFIG+=wasm CONFIG+=wasm
+"$WASM_QMAKE" ../cool-retro-term.pro CONFIG+=wasm CONFIG+=wasm "QMAKE_LFLAGS+=-s INITIAL_MEMORY=134217728"
 make -j"$(nproc)"
 
 OUT="$ROOT/build-wasm/deploy"
