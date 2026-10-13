@@ -45,7 +45,7 @@ jobs:
         run: |
           mkdir -p site
           cp build-wasm/deploy/cool-retro-term.js build-wasm/deploy/cool-retro-term.wasm site/ 2>/dev/null || true
-          cp wasm/index.html site/
+          cp wasm/index.html wasm/boot-sim.js site/
           cp -r app/qml/fonts site/fonts 2>/dev/null || true
           cp -r app/qml/images site/images 2>/dev/null || true
           cp -r app/icons site/icons 2>/dev/null || true
