@@ -32,7 +32,6 @@ jobs:
           version: 6.7.3
           target: wasm
           arch: wasm_singlethread
-          arch: wasm_singlethread
           host: linux
 
       - name: Build
