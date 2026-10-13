@@ -29,7 +29,7 @@ jobs:
       - name: Install Qt 6 for WebAssembly
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.6.3
+          version: 6.5.3
           target: desktop
           arch: wasm_singlethread
           host: linux
