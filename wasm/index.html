@@ -7,7 +7,7 @@
   body { margin:0; background:#050505; }
   #crt { width:100vw; height:100vh; }
   #log { position:fixed; left:8px; bottom:8px; width:80%; height:14px;
-         color:#5f5; font:12px monospace; opacity:.7; }
+         color:#5f5; font:12px monospace; opacity:.85; z-index:9999; }
 </style>
 </head>
 <body>
@@ -18,6 +18,10 @@
   window.addEventListener('error', e => {
     log.textContent = '[crt] error: ' + (e.message || e.type).slice(0, 250);
   });
+  try {
+    const gl = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl');
+    if (!gl) log.textContent = '[crt] WebGL unavailable — Qt wasm cannot render';
+  } catch (e) { log.textContent = '[crt] WebGL probe failed: ' + e; }
   </script>
 
   <!-- Emscripten output of cool-retro-term built with Qt for WebAssembly -->
@@ -67,7 +71,7 @@
       qtContainerElements: [canvas],
       locateFile: f => f,
       print: t => { if (t) log.textContent = ('[crt] ' + t).slice(0, 300); console.log('[crt]', t); },
-      printErr: t => { if (t) console.error('[crt]', t); }
+      printErr: t => { if (t) { console.error('[crt]', t); if (/abort|fail|error|cannot|unable/i.test(t)) log.textContent = ('[crt] ' + t).slice(0, 300); } },
     }).then(m => {
       module = m;
       log.textContent = '[crt] app up — boot simulation starting';
