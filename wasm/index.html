@@ -64,11 +64,40 @@
 
   function boot () {
     if (typeof createQtAppInstance === 'undefined') { setTimeout(boot, 100); return; }
-    const canvas = document.getElementById('crt');
-    log.textContent = '[crt] instantiating wasm...';
-    createQtAppInstance({
+    // Prefetch the wasm ourselves so we can show progress and rule out
+    // silent fetch/compile hangs inside the emscripten glue.
+    log.textContent = '[crt] downloading wasm (0%)...';
+    fetch('cool-retro-term.wasm').then(r => {
+      if (!r.ok) throw new Error('wasm HTTP ' + r.status);
+      const total = +r.headers.get('Content-Length') || 0;
+      const reader = r.body.getReader();
+      const chunks = [];
+      let got = 0;
+      const tick = setInterval(() => {
+        if (total) log.textContent = '[crt] downloading wasm (' + Math.round(got / total * 100) + '%)...';
+      }, 500);
+      const pump = () => reader.read().then(({ done, value }) => {
+        if (done) { clearInterval(tick); return compile(chunks); }
+        chunks.push(value); got += value.length; return pump();
+      });
+      return pump();
+    }, e => { log.textContent = '[crt] fetch failed: ' + e; }).catch(e => { log.textContent = '[crt] fetch failed: ' + e; });
+
+    function compile (chunks) {
+      const bytes = new Uint8Array(chunks.reduce((n, c) => n + c.length, 0));
+      let off = 0; for (const c of chunks) { bytes.set(c, off); off += c.length; }
+      log.textContent = '[crt] compiling wasm (' + Math.round(bytes.length / 1048576) + ' MB)...';
+      window.__wasmBytes = bytes;
+      boot2();
+    }
+
+    function boot2 () {
+      const canvas = document.getElementById('crt');
+      log.textContent = '[crt] instantiating wasm...';
+      createQtAppInstance({
       canvas: canvas,
       qtContainerElements: [canvas],
+      wasmBinary: window.__wasmBytes,
       locateFile: f => f,
       print: t => { if (t) log.textContent = ('[crt] ' + t).slice(0, 300); console.log('[crt]', t); },
       printErr: t => { if (t) { console.error('[crt]', t); if (/abort|fail|error|cannot|unable/i.test(t)) log.textContent = ('[crt] ' + t).slice(0, 300); } },
@@ -77,6 +106,7 @@
       log.textContent = '[crt] app up — boot simulation starting';
       setTimeout(window.startBootSim, 1500);
     }, e => { log.textContent = '[crt] init failed: ' + e; console.error(e); });
+    }
   }
   boot();
   </script>
